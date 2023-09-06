@@ -27,16 +27,6 @@ function convertPokemonToLi(pokemon) {
     `;
 }
 
-// function renderDetailCard(pokemon) {
-//   return `
-//         <div class='detailCard'>
-//             <h2>${pokemon.name}</h2>
-//             <p>Type: ${pokemon.type}</p>
-//             <img src="${pokemon.photo}" alt="${pokemon.name}">
-//         </div>
-//     `;
-// }
-
 pokemonList.addEventListener("click", (event) => {
   const clickedPokemon = event.target.closest(".pokemon");
   if (clickedPokemon) {
@@ -82,15 +72,3 @@ loadMoreButton.addEventListener("click", () => {
     loadPokemonItens(offset, limit);
   }
 });
-
-// listItem.addEventListener("click", () => (pokemonList.innerHTML = detailCard));
-
-// const detailCard = (pokemon) => {
-//   return `
-//       <div class="card">
-//           <h2>${pokemon.name}</h2>
-//           <p>${pokemon.type}</p>
-//           <p>${pokemon.photo}</p>
-//       </div>
-//   `;
-// };
