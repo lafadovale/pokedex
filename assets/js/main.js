@@ -1,47 +1,96 @@
-const pokemonList = document.getElementById('pokemonList')
-const loadMoreButton = document.getElementById('loadMoreButton')
+const pokemonList = document.getElementById("pokemonList");
+const loadMoreButton = document.getElementById("loadMoreButton");
+const listItem = document.getElementsByClassName("pokemon");
+const detailCard = document.getElementById("detailCard");
 
-const maxRecords = 151
-const limit = 10
+const maxRecords = 151;
+const limit = 10;
 let offset = 0;
 
 function convertPokemonToLi(pokemon) {
-    return `
+  return `
         <li class="pokemon ${pokemon.type}">
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
 
             <div class="detail">
                 <ol class="types">
-                    ${pokemon.types.map((type) => `<li class="type ${type}">${type}</li>`).join('')}
+                    ${pokemon.types
+                      .map((type) => `<li class="type ${type}">${type}</li>`)
+                      .join("")}
                 </ol>
 
                 <img src="${pokemon.photo}"
                      alt="${pokemon.name}">
             </div>
         </li>
-    `
+    `;
 }
+
+// function renderDetailCard(pokemon) {
+//   return `
+//         <div class='detailCard'>
+//             <h2>${pokemon.name}</h2>
+//             <p>Type: ${pokemon.type}</p>
+//             <img src="${pokemon.photo}" alt="${pokemon.name}">
+//         </div>
+//     `;
+// }
+
+pokemonList.addEventListener("click", (event) => {
+  const clickedPokemon = event.target.closest(".pokemon");
+  if (clickedPokemon) {
+    const pokemonId = clickedPokemon.id;
+    pokeApi.getPokemonDetail(pokemonId).then((pokemon) => {
+      // Crie uma nova div para exibir os detalhes do Pokémon
+      const detailDiv = document.createElement("div");
+      detailDiv.classList.add("detail-card");
+
+      // Preencha a div com os detalhes do Pokémon
+      detailDiv.innerHTML = `
+            <h2>${pokemon.name}</h2>
+            <p>Type: ${pokemon.type}</p>
+            <img src="${pokemon.photo}" alt="${pokemon.name}">
+            `;
+
+      // Limpe o conteúdo anterior do detalheContainer e adicione a nova div
+      detailContainer.innerHTML = "";
+      detailContainer.appendChild(detailDiv);
+    });
+  }
+});
 
 function loadPokemonItens(offset, limit) {
-    pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
-        const newHtml = pokemons.map(convertPokemonToLi).join('')
-        pokemonList.innerHTML += newHtml
-    })
+  pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
+    const newHtml = pokemons.map(convertPokemonToLi).join("");
+    pokemonList.innerHTML += newHtml;
+  });
 }
 
-loadPokemonItens(offset, limit)
+loadPokemonItens(offset, limit);
 
-loadMoreButton.addEventListener('click', () => {
-    offset += limit
-    const qtdRecordsWithNexPage = offset + limit
+loadMoreButton.addEventListener("click", () => {
+  offset += limit;
+  const qtdRecordsWithNexPage = offset + limit;
 
-    if (qtdRecordsWithNexPage >= maxRecords) {
-        const newLimit = maxRecords - offset
-        loadPokemonItens(offset, newLimit)
+  if (qtdRecordsWithNexPage >= maxRecords) {
+    const newLimit = maxRecords - offset;
+    loadPokemonItens(offset, newLimit);
 
-        loadMoreButton.parentElement.removeChild(loadMoreButton)
-    } else {
-        loadPokemonItens(offset, limit)
-    }
-})
+    loadMoreButton.parentElement.removeChild(loadMoreButton);
+  } else {
+    loadPokemonItens(offset, limit);
+  }
+});
+
+// listItem.addEventListener("click", () => (pokemonList.innerHTML = detailCard));
+
+// const detailCard = (pokemon) => {
+//   return `
+//       <div class="card">
+//           <h2>${pokemon.name}</h2>
+//           <p>${pokemon.type}</p>
+//           <p>${pokemon.photo}</p>
+//       </div>
+//   `;
+// };
